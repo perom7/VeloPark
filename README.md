@@ -21,20 +21,20 @@ This is a Vehicle Parking Management System built with Flask that allows:
 ## Features
 
 ### Admin Features
-- ✅ Create, edit, and delete parking lots
-- ✅ View all parking spots and their status
-- ✅ View registered users
-- ✅ Dashboard with charts and statistics
-- ✅ Search parking spots by ID and status
-- ✅ API endpoints for data access
+-  Create, edit, and delete parking lots
+-  View all parking spots and their status
+-  View registered users
+-  Dashboard with charts and statistics
+-  Search parking spots by ID and status
+-  API endpoints for data access
 
 ### User Features
-- ✅ User registration and login
-- ✅ Browse available parking lots
-- ✅ Automatic spot booking
-- ✅ Release parking spots
-- ✅ View booking history and costs
-- ✅ Personal dashboard with statistics
+-  User registration and login
+-  Browse available parking lots
+-  Automatic spot booking
+-  Release parking spots
+-  View booking history and costs
+-  Personal dashboard with statistics
 
 ## Database Schema
 
@@ -95,17 +95,17 @@ MAD Project/
 
 ## Core Functionalities Implemented
 
-✅ **Admin and User Login System**
-✅ **Admin Dashboard** with parking lot management
-✅ **User Dashboard** with booking functionality
-✅ **Automatic Spot Allocation**
-✅ **Parking Spot Status Management**
-✅ **Cost Calculation** based on duration
-✅ **Search Functionality** for parking spots
-✅ **API Resources** for data access
-✅ **Responsive Design** with Bootstrap
-✅ **Form Validation** (frontend and backend)
-✅ **Error Handling** with custom error pages
+ **Admin and User Login System**
+ **Admin Dashboard** with parking lot management
+ **User Dashboard** with booking functionality
+ **Automatic Spot Allocation**
+ **Parking Spot Status Management**
+ **Cost Calculation** based on duration
+ **Search Functionality** for parking spots
+ **API Resources** for data access
+ **Responsive Design** with Bootstrap
+ **Form Validation** (frontend and backend)
+ **Error Handling** with custom error pages
 
 ## Additional Features
 
