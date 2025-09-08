@@ -1,0 +1,213 @@
+{% extends 'base.html' %}
+{% block title %}Admin Dashboard | Velopark{% endblock %}
+{% block nav_links %}
+<li class="nav-item">
+    <a class="nav-link" href="/" tabindex="0"><i class="fa-solid fa-house"></i> Home</a>
+</li>
+<li class="nav-item">
+    <a class="nav-link" href="/admin/dashboard" tabindex="0"><i class="fa-solid fa-gauge-high"></i> Dashboard</a>
+</li>
+<li class="nav-item">
+    <a class="nav-link" href="/profile" tabindex="0"><i class="fa-solid fa-user-circle"></i> Profile</a>
+</li>
+<li class="nav-item">
+    <a class="nav-link" href="/logout" tabindex="0"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</a>
+</li>
+{% endblock %}
+{% block content %}
+<!-- Search Bar for Parking Spots -->
+<div class="row mb-3">
+    <div class="col-12">
+        <form class="d-flex gap-2" method="get" action="/admin/search_spots">
+            <input type="text" class="form-control" name="query" placeholder="Search by Spot ID" value="{{ search_query if search_mode else '' }}" style="max-width:200px;">
+            <select class="form-select" name="status" style="max-width:180px;">
+                <option value="">All Statuses</option>
+                <option value="A" {% if search_status == 'A' %}selected{% endif %}>Available</option>
+                <option value="O" {% if search_status == 'O' %}selected{% endif %}>Occupied</option>
+            </select>
+            <button class="btn btn-outline-primary" type="submit">Search</button>
+            {% if search_mode %}
+            <a href="/admin/dashboard" class="btn btn-outline-secondary">Clear</a>
+            {% endif %}
+        </form>
+        {% if search_mode %}
+        <div class="mt-2 text-info">Showing search results{% if search_query %} for Spot ID: <b>{{ search_query }}</b>{% endif %}{% if search_status %} with status: <b>{{ 'Available' if search_status == 'A' else 'Occupied' }}</b>{% endif %}.</div>
+        {% endif %}
+    </div>
+</div>
+{% if not search_mode %}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card card-accent shadow">
+            <div class="card-body">
+                <h5 class="card-title"><i class="fa-solid fa-chart-bar me-2"></i> Summary</h5>
+                <div style="background:#F3F6F9; border-radius:8px; padding:1rem;">
+                    <canvas id="summaryChart" height="100"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row g-4 mb-4">
+    <div class="col-lg-6">
+        <div class="card card-accent shadow h-100">
+            <div class="card-body text-center">
+                <h5 class="card-title"><i class="fa-solid fa-wallet me-2"></i> Total Earnings</h5>
+                <p class="display-4 fw-bold" style="color: #4682B4;">₹{{ total_earnings | int }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="card card-accent-teal shadow h-100">
+            <div class="card-body">
+                <h5 class="card-title"><i class="fa-solid fa-file-invoice-dollar me-2"></i> Revenue by Customer</h5>
+                <ul class="list-group list-group-flush">
+                    {% for user in earnings_by_user %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent">
+                        {{ user.username }}
+                        <span class="badge bg-primary rounded-pill">₹{{ user.total_paid | int }}</span>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row g-4">
+    <div class="col-lg-6">
+        <div class="card card-accent-teal shadow h-100">
+            <div class="card-body">
+                <h5 class="card-title"><i class="fa-solid fa-warehouse me-2"></i> Parking Lots</h5>
+                <a href="/admin/parking_lot/create" class="btn btn-primary btn-sm mb-2"><i class="fa-solid fa-plus"></i> Add Parking Lot</a>
+                <div class="table-responsive">
+                    <table class="table table-striped align-middle">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Price</th>
+                                <th>Max Spots</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for lot in parking_lots %}
+                            <tr>
+                                <td>{{ lot.id }}</td>
+                                <td>{{ lot.name }}</td>
+                                <td>{{ lot.price }}</td>
+                                <td>{{ lot.max_spots }}</td>
+                                <td>
+                                    <a href="/admin/parking_lot/edit/{{ lot.id }}" class="btn btn-outline-primary btn-sm"><i class="fa-solid fa-pen"></i> Edit</a>
+                                    <a href="/admin/parking_lot/delete/{{ lot.id }}" class="btn btn-outline-danger btn-sm"><i class="fa-solid fa-trash"></i> Delete</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="card card-accent shadow h-100 mb-4 mb-lg-0">
+            <div class="card-body">
+                <h5 class="card-title"><i class="fa-solid fa-users me-2"></i> Registered Users</h5>
+                <div class="table-responsive">
+                    <table class="table table-striped align-middle">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Username</th>
+                                <th>Role</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for user in users %}
+                            <tr>
+                                <td>{{ user.id }}</td>
+                                <td>{{ user.username }}</td>
+                                <td>{{ user.role }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card card-accent-yellow shadow">
+            <div class="card-body">
+                <h5 class="card-title"><i class="fa-solid fa-square-parking me-2"></i> Parking Spots Status</h5>
+                <div class="table-responsive">
+                    <table class="table table-striped align-middle">
+                        <thead>
+                            <tr>
+                                <th>Spot ID</th>
+                                <th>Lot</th>
+                                <th>Status</th>
+                                <th>User</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for spot in parking_spots %}
+                            <tr>
+                                <td>{{ spot.id }}</td>
+                                <td>{{ spot.lot_name }}</td>
+                                <td>{{ spot.status }}</td>
+                                <td>{{ spot.user or '-' }}</td>
+                                <td>
+                                    <a href="/admin/parking_spot/view/{{ spot.id }}" class="btn btn-outline-secondary btn-sm"><i class="fa-solid fa-eye"></i> View</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+const ctx = document.getElementById('summaryChart').getContext('2d');
+const summaryChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: {{ lot_names|tojson }},
+        datasets: [
+            {
+                label: 'Available Spots',
+                data: {{ available_spots|tojson }},
+                backgroundColor: 'rgba(54, 162, 235, 0.7)'
+            },
+            {
+                label: 'Occupied Spots',
+                data: {{ occupied_spots|tojson }},
+                backgroundColor: 'rgba(255, 99, 132, 0.7)'
+            }
+        ]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: { position: 'top' },
+            title: { display: true, text: 'Parking Lot Status' }
+        },
+        scales: {
+            x: { stacked: true },
+            y: { beginAtZero: true, stacked: true }
+        }
+    }
+});
+</script>
+{% endblock %} 

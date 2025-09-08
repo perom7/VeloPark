@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block title %}Profile | Velopark{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="card card-accent shadow mb-4">
+            <div class="card-body">
+                <h2 class="card-title mb-3 text-center"> Profile</h2>
+                <ul class="list-group list-group-flush mb-3">
+                    <li class="list-group-item bg-transparent"><strong>Username:</strong> {{ user.username }}</li>
+                    <li class="list-group-item bg-transparent"><strong>Role:</strong> {{ user.role }}</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="card card-accent-yellow shadow">
+            <div class="card-body">
+                <h5 class="card-title mb-3"><i class="fa-solid fa-clock-rotate-left me-2"></i> Your Bookings</h5>
+                <div class="table-responsive">
+                    <table class="table table-striped align-middle">
+                        <thead>
+                            <tr>
+                                <th>Spot ID</th>
+                                <th>Lot</th>
+                                <th>Status</th>
+                                <!-- <th>Parked At</th>
+                                <th>Left At</th> -->
+                                <th>Cost</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for booking in bookings %}
+                            <tr>
+                                <td>{{ booking.spot_id }}</td>
+                                <td>{{ booking.lot_name }}</td>
+                                <td>{{ booking.status }}</td>
+                                <!-- <td>{{ booking.parking_timestamp or '-' }}</td>
+                                <td>{{ booking.leaving_timestamp or '-' }}</td> -->
+                                <td>{{ booking.cost | int if booking.cost is not none else 'Ongoing' }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

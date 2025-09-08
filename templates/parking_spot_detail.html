@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block title %}Parking Spot Details | Velopark{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="card card-accent shadow">
+            <div class="card-body p-4">
+                <ul class="list-group list-group-flush mb-3">
+                    <li class="list-group-item bg-transparent"><strong>Spot ID:</strong> {{ spot.id }}</li>
+                    <li class="list-group-item bg-transparent"><strong>Lot:</strong> {{ spot.lot_name }}</li>
+                    <li class="list-group-item bg-transparent"><strong>Status:</strong> <span class="badge {% if spot.status == 'Occupied' %}bg-danger{% else %}bg-success{% endif %}">{{ spot.status }}</span></li>
+                    <li class="list-group-item bg-transparent"><strong>User:</strong> {{ spot.user or '-' }}</li>
+                    <li class="list-group-item bg-transparent"><strong>Parked At:</strong> {{ spot.parking_timestamp or '-' }}</li>
+                    <li class="list-group-item bg-transparent"><strong>Left At:</strong> {{ spot.leaving_timestamp or '-' }}</li>
+                </ul>
+                <div class="d-grid gap-2">
+                    <a href="/admin/dashboard" class="btn btn-outline-secondary rounded-pill"><i class="fa-solid fa-arrow-left"></i> Back to Dashboard</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

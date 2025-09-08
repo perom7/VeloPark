@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block title %}Home | Velopark{% endblock %}
+{% block content %}
+<section class="py-5 text-center">
+    <div class="container">
+        <div class="row justify-content-center align-items-center">
+            <div class="col-lg-8">
+                <h1 class="home-title display-4 fw-bold mb-3"><i class="bi bi-geo-alt-fill text-primary"></i> Welcome to Velopark</h1>
+                <p class="lead mb-4">A modern solution for managing parking lots, spots, and reservations. Book your spot, manage lots, and view real-time status with ease.</p>
+                {% if not session.get('user_id') %}
+                <div class="d-flex justify-content-center gap-3 mb-4">
+                    <a href="/login" class="btn btn-primary btn-lg rounded-pill px-4"><i class="bi bi-box-arrow-in-right"></i> Login</a>
+                    <a href="/register" class="btn btn-primary btn-lg rounded-pill px-4"><i class="bi bi-person-plus"></i> Register</a>
+                </div>
+                {% endif %}
+                <div class="row mt-5 g-4">
+                    <div class="col-md-4">
+                        <div class="card card-accent shadow h-100">
+                            <div class="card-body text-center">
+                                <i class="fa-solid fa-user-gear fa-2x mb-3"></i>
+                                <h5 class="card-title">Admin Dashboard</h5>
+                                <p class="card-text">Create, edit, and manage parking lots and spots. View all users and monitor parking status in real time.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card card-accent-teal shadow h-100">
+                            <div class="card-body text-center">
+                                <i class="fa-solid fa-car-side fa-2x mb-3"></i>
+                                <h5 class="card-title">User Dashboard</h5>
+                                <p class="card-text">Book parking spots, view your reservations, and manage your parking history easily and securely.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card card-accent-yellow shadow h-100">
+                            <div class="card-body text-center">
+                                <i class="fa-solid fa-chart-bar fa-2x mb-3"></i>
+                                <h5 class="card-title">Analytics</h5>
+                                <p class="card-text">Visualize parking lot usage, spot availability, and your own parking trends with interactive charts.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %} 

@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block title %}Logout | Velopark{% endblock %}
+{% block content %}
+<div class="row justify-content-center align-items-center" style="min-height:60vh;">
+    <div class="col-md-6 col-lg-5">
+        <div class="card card-accent shadow-lg text-center">
+            <div class="card-body p-5">
+                <div class="mb-3">
+                    <i class="fa-solid fa-arrow-right-from-bracket fa-3x text-primary"></i>
+                </div>
+                <h2 class="logout-title mb-3">Logout</h2>
+                <p class="lead mb-4" style="color:#374151;">Are you sure you want to logout?</p>
+                <form method="POST" action="/logout">
+                    <button type="submit" class="btn btn-danger rounded-pill px-4"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</button>
+                    <a href="/" class="btn btn-outline-secondary rounded-pill px-4 ms-2">Cancel</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

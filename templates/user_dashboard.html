@@ -1,0 +1,156 @@
+{% extends 'base.html' %}
+{% block title %}User Dashboard | Velopark{% endblock %}
+{% block nav_links %}
+<li class="nav-item">
+    <a class="nav-link" href="/" tabindex="0"><i class="fa-solid fa-house"></i> Home</a>
+</li>
+<li class="nav-item">
+    <a class="nav-link" href="/user/dashboard" tabindex="0"><i class="fa-solid fa-gauge-high"></i> Dashboard</a>
+</li>
+<li class="nav-item">
+    <a class="nav-link" href="/profile" tabindex="0"><i class="fa-solid fa-user-circle"></i> Profile</a>
+</li>
+<li class="nav-item">
+    <a class="nav-link" href="/logout" tabindex="0"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</a>
+</li>
+{% endblock %}
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card card-accent shadow mb-4">
+            <div class="card-body">
+                <h5 class="card-title"><i class="fa-solid fa-chart-bar me-2"></i> Your Parking Summary</h5>
+                <div style="background:#F3F6F9; border-radius:8px; padding:1rem;">
+                    <canvas id="userSummaryChart" height="100"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card card-accent shadow mb-4">
+            <div class="card-body text-center">
+                <h5 class="card-title"><i class="fa-solid fa-wallet me-2"></i> Total Spent</h5>
+                <p class="display-4 fw-bold" style="color: #4682B4;">₹{{ total_spent | int }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card card-accent-teal shadow mb-4">
+            <div class="card-body">
+                <h5 class="card-title"><i class="fa-solid fa-square-parking me-2"></i> Book a Parking Spot</h5>
+                <form method="POST" action="/user/book">
+                    <div class="row g-2 align-items-end">
+                        <div class="col-md-8">
+                            <label for="lot_id" class="form-label">Select Parking Lot</label>
+                            <select class="form-select" id="lot_id" name="lot_id" required>
+                                <option value="">Choose...</option>
+                                {% for lot in parking_lots %}
+                                <option value="{{ lot.id }}">{{ lot.name }} ({{ lot.max_spots }} spots)</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <button type="submit" class="btn btn-primary w-100"><i class="fa-solid fa-plus"></i> Book Spot</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-12">
+        <div class="card card-accent-yellow shadow">
+            <div class="card-body">
+                <h5 class="card-title"><i class="fa-solid fa-clock-rotate-left me-2"></i> Your Bookings</h5>
+                <div class="table-responsive">
+                    <table class="table table-striped align-middle">
+                        <thead>
+                            <tr>
+                                <th>Spot ID</th>
+                                <th>Lot</th>
+                                <th>Status</th>
+                                <th>Parked At</th>
+                                <th>Left At</th>
+                                <th>Cost</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for booking in bookings %}
+                            <tr>
+                                <td>{{ booking.spot_id }}</td>
+                                <td>{{ booking.lot_name }}</td>
+                                <td>{{ booking.status }}</td>
+                                <td>{{ booking.parking_timestamp or '-' }}</td>
+                                <td>{{ booking.leaving_timestamp or '-' }}</td>
+                                <td>{{ booking.cost | int if booking.cost is not none else '-' }}</td>
+                                <td>
+                                    {% if booking.status == 'Occupied' %}
+                                    <form method="POST" action="/user/release/{{ booking.id }}" style="display:inline;">
+                                        <button type="submit" class="btn btn-outline-warning btn-sm"><i class="fa-solid fa-right-from-bracket"></i> Release</button>
+                                    </form>
+                                    {% else %}-{% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+const ctx = document.getElementById('userSummaryChart').getContext('2d');
+const userSummaryChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: {{ chart_lot_names|tojson }},
+        datasets: [
+            {
+                label: 'Bookings',
+                data: {{ chart_booking_counts|tojson }},
+                borderColor: '#4682B4',
+                backgroundColor: 'rgba(70, 130, 180, 0.15)',
+                tension: 0.4,
+                fill: true,
+                pointBackgroundColor: '#4682B4',
+                pointBorderColor: '#4682B4',
+                pointRadius: 5,
+                pointHoverRadius: 7
+            }
+        ]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: { display: false },
+            title: { display: true, text: 'Your Bookings per Parking Lot' }
+        },
+        layout: {
+            padding: 10
+        },
+        scales: {
+            x: {
+                title: { display: true, text: 'Parking Lot' },
+                offset: true
+            },
+            y: {
+                beginAtZero: true,
+                title: { display: true, text: 'Number of Bookings' }
+            }
+        }
+    }
+});
+</script>
+{% endblock %} 

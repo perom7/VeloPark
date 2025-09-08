@@ -1,0 +1,53 @@
+ENTITY RELATIONSHIP DIAGRAM
+Vehicle Parking App Database
+
++----------------+       +------------------+       +------------------+
+|     USERS      |       |   PARKING_LOTS   |       |  PARKING_SPOTS   |
++----------------+       +------------------+       +------------------+
+| PK: id         |       | PK: id           |       | PK: id           |
+| username       |       | name             |       | FK: lot_id       |
+| password_hash  |       | price            |       | status           |
+| role           |       | address          |       | created_at       |
+| created_at     |       | pincode          |       +------------------+
++----------------+       | max_spots        |                |
+        |                | created_at       |                |
+        |                +------------------+                |
+        |                        |                           |
+        |                        | 1:N                       |
+        |                        |                           |
+        |                        v                           |
+        |                +------------------+                |
+        |                |   PARKING_SPOTS   |                |
+        |                +------------------+                |
+        |                        |                           |
+        |                        | 1:N                       |
+        |                        |                           |
+        |                        v                           |
+        |                +------------------+                |
+        |                |   RESERVATIONS    |                |
+        |                +------------------+                |
+        |                        |                           |
+        |                        | 1:N                       |
+        |                        |                           |
+        v                        v                           v
++----------------+       +------------------+       +------------------+
+|   RESERVATIONS  |       |   RESERVATIONS    |       |   RESERVATIONS    |
++----------------+       +------------------+       +------------------+
+| PK: id         |       | PK: id           |       | PK: id           |
+| FK: user_id    |       | FK: lot_id       |       | FK: spot_id      |
+| FK: spot_id    |       | FK: spot_id      |       | user_id           |
+| parking_timestamp|      | parking_timestamp|      | parking_timestamp|
+| leaving_timestamp|      | leaving_timestamp|      | leaving_timestamp|
+| cost           |       | cost             |       | cost             |
+| created_at     |       | created_at       |       | created_at       |
++----------------+       +------------------+       +------------------+
+
+RELATIONSHIPS:
+1. USERS (1) -----> (N) RESERVATIONS
+2. PARKING_LOTS (1) -----> (N) PARKING_SPOTS  
+3. PARKING_SPOTS (1) -----> (N) RESERVATIONS
+
+CASCADE DELETE:
+- Delete Parking Lot -> Delete all Parking Spots -> Delete all Reservations
+- Delete User -> Delete all Reservations
+- Delete Parking Spot -> Delete all Reservations 
