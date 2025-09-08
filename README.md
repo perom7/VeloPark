@@ -132,4 +132,3 @@ The database is created programmatically when the application starts:
 
 ---
 
-**Developed for Modern Application Development I - IIT Madras** 
