@@ -1,0 +1,95 @@
+{
+  "info": {
+    "name": "Parking App API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_postman_id": "a3f0f3a8-9f1d-4c8b-8a4d-1234567890ab"
+  },
+  "item": [
+    {
+      "name": "Health",
+      "request": {"method": "GET", "url": "{{base_url}}/api/health"}
+    },
+    {
+      "name": "Version",
+      "request": {"method": "GET", "url": "{{base_url}}/api/version"}
+    },
+    {
+      "name": "Auth: Register",
+      "request": {
+        "method": "POST",
+        "header": [{"key": "Content-Type", "value": "application/json"}],
+        "body": {"mode": "raw", "raw": "{\n  \"username\": \"user1\",\n  \"email\": \"user1@example.com\",\n  \"password\": \"secret123\"\n}"},
+        "url": "{{base_url}}/api/auth/register"
+      }
+    },
+    {
+      "name": "Auth: Login",
+      "request": {
+        "method": "POST",
+        "header": [{"key": "Content-Type", "value": "application/json"}],
+        "body": {"mode": "raw", "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"admin123\"\n}"},
+        "url": "{{base_url}}/api/auth/login"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "try {",
+              "  const data = pm.response.json();",
+              "  if (data.access_token) { pm.environment.set('token', data.access_token); }",
+              "} catch (e) {}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Auth: Me",
+      "request": {"method": "GET", "header": [{"key": "Authorization", "value": "Bearer {{token}}"}], "url": "{{base_url}}/api/auth/me"}
+    },
+    {
+      "name": "Admin: Create Lot",
+      "request": {
+        "method": "POST",
+        "header": [{"key": "Content-Type", "value": "application/json"}, {"key": "Authorization", "value": "Bearer {{token}}"}],
+        "body": {"mode": "raw", "raw": "{\n  \"prime_location_name\": \"Main Street\",\n  \"price_per_hour\": 50,\n  \"address\": \"123\",\n  \"pincode\": \"560001\",\n  \"number_of_spots\": 10\n}"},
+        "url": "{{base_url}}/api/admin/lots"
+      }
+    },
+    {
+      "name": "Admin: List Lots",
+      "request": {"method": "GET", "header": [{"key": "Authorization", "value": "Bearer {{token}}"}], "url": "{{base_url}}/api/admin/lots"}
+    },
+    {
+      "name": "Public: List Lots",
+      "request": {"method": "GET", "url": "{{base_url}}/api/lots"}
+    },
+    {
+      "name": "Reserve Spot",
+      "request": {
+        "method": "POST",
+        "header": [{"key": "Content-Type", "value": "application/json"}, {"key": "Authorization", "value": "Bearer {{token}}"}],
+        "body": {"mode": "raw", "raw": "{\n  \"lot_id\": 1\n}"},
+        "url": "{{base_url}}/api/reservations"
+      }
+    },
+    {
+      "name": "My Reservations",
+      "request": {"method": "GET", "header": [{"key": "Authorization", "value": "Bearer {{token}}"}], "url": "{{base_url}}/api/reservations/me"}
+    },
+    {
+      "name": "Metrics: User",
+      "request": {"method": "GET", "header": [{"key": "Authorization", "value": "Bearer {{token}}"}], "url": "{{base_url}}/api/metrics/user"}
+    },
+    {
+      "name": "Export CSV: Trigger",
+      "request": {"method": "POST", "header": [{"key": "Authorization", "value": "Bearer {{token}}"}], "url": "{{base_url}}/api/export/csv"}
+    }
+  ],
+  "variable": [
+    {"key": "token", "value": ""},
+    {"key": "base_url", "value": "http://localhost:5000"}
+  ]
+}

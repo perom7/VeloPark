@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="860" height="380" font-family="Arial, sans-serif" font-size="12">
+  <style>
+    .entity rect{fill:#f8f9fa;stroke:#333;stroke-width:1.2;}
+    .title{fill:#0d6efd;font-weight:bold;}
+    .attr{font-size:11;}
+    .rel{stroke:#555;stroke-width:1;marker-end:url(#arrow);}
+  </style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#555" />
+    </marker>
+  </defs>
+  <!-- User -->
+  <g class="entity" transform="translate(20,20)">
+    <rect width="200" height="150" rx="4"/>
+    <text class="title" x="10" y="18">User</text>
+    <text class="attr" x="10" y="38">id (PK)</text>
+    <text class="attr" x="10" y="54">username (UNQ)</text>
+    <text class="attr" x="10" y="70">email (UNQ, nullable)</text>
+    <text class="attr" x="10" y="86">password_hash</text>
+    <text class="attr" x="10" y="102">role (admin|user)</text>
+    <text class="attr" x="10" y="118">created_at</text>
+    <text class="attr" x="10" y="134">last_login_at</text>
+  </g>
+  <!-- ParkingLot -->
+  <g class="entity" transform="translate(320,20)">
+    <rect width="210" height="150" rx="4"/>
+    <text class="title" x="10" y="18">ParkingLot</text>
+    <text class="attr" x="10" y="38">id (PK)</text>
+    <text class="attr" x="10" y="54">prime_location_name</text>
+    <text class="attr" x="10" y="70">price_per_hour</text>
+    <text class="attr" x="10" y="86">address</text>
+    <text class="attr" x="10" y="102">pincode</text>
+    <text class="attr" x="10" y="118">number_of_spots</text>
+    <text class="attr" x="10" y="134">created_at</text>
+  </g>
+  <!-- ParkingSpot -->
+  <g class="entity" transform="translate(320,200)">
+    <rect width="210" height="130" rx="4"/>
+    <text class="title" x="10" y="18">ParkingSpot</text>
+    <text class="attr" x="10" y="38">id (PK)</text>
+    <text class="attr" x="10" y="54">lot_id (FK)</text>
+    <text class="attr" x="10" y="70">index_number (UNQ per lot)</text>
+    <text class="attr" x="10" y="86">status (A|O)</text>
+  </g>
+  <!-- Reservation -->
+  <g class="entity" transform="translate(600,20)">
+    <rect width="230" height="180" rx="4"/>
+    <text class="title" x="10" y="18">Reservation</text>
+    <text class="attr" x="10" y="38">id (PK)</text>
+    <text class="attr" x="10" y="54">spot_id (FK)</text>
+    <text class="attr" x="10" y="70">user_id (FK)</text>
+    <text class="attr" x="10" y="86">start_time</text>
+    <text class="attr" x="10" y="102">end_time (nullable)</text>
+    <text class="attr" x="10" y="118">parking_cost</text>
+    <text class="attr" x="10" y="134">vehicle_number</text>
+    <text class="attr" x="10" y="150">vehicle_model</text>
+    <text class="attr" x="10" y="166">remarks</text>
+  </g>
+  <!-- Relationships -->
+  <line class="rel" x1="220" y1="95" x2="600" y2="95" />
+  <text x="300" y="87" font-size="11">User 1..* Reservation</text>
+  <line class="rel" x1="425" y1="170" x2="425" y2="200" />
+  <text x="435" y="185" font-size="11">ParkingLot 1..* ParkingSpot</text>
+  <line class="rel" x1="530" y1="265" x2="715" y2="200" />
+  <text x="600" y="250" font-size="11">ParkingSpot 1..* Reservation</text>
+</svg>

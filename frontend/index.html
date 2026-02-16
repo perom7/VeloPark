@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VeloPark - Smart Parking Management</title>
+  <meta name="description"
+    content="VeloPark is an intelligent parking management system with real-time availability, smart spot recommendations, and predictive analytics." />
+  <meta name="theme-color" content="#000000" />
+  <link rel="manifest" href="/manifest.webmanifest" />
+  <link rel="icon" href="/icons/icon-192.svg" type="image/svg+xml" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+  <link rel="stylesheet" href="/assets/css/styles.css" />
+</head>
+
+<body>
+  <!-- Toast container -->
+  <div class="position-fixed top-0 end-0 p-3" style="z-index: 1080;">
+    <div id="toast-container"></div>
+  </div>
+
+  <div class="container py-3">
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg mb-4 rounded" id="main-navbar">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="#">
+          <i class="bi bi-pin-map-fill me-2"></i>VeloPark
+        </a>
+        <div class="d-flex ms-auto align-items-center" id="user-info"></div>
+      </div>
+    </nav>
+
+    <!-- =============================== -->
+    <!-- LOGIN / REGISTER SECTION        -->
+    <!-- =============================== -->
+    <div id="auth-section">
+      <!-- Hero Header -->
+      <div class="text-center mb-5" style="padding: 2rem 0;">
+        <h1 class="dashboard-title" style="font-size: 2.8rem;">Smart Parking,<br />Simplified</h1>
+        <p class="dashboard-subtitle" style="max-width: 500px; margin: 0 auto;">
+          Real-time availability, intelligent spot recommendations, and seamless booking — all in one platform.
+        </p>
+        <div class="quick-stats justify-content-center mt-4">
+          <div class="quick-stat-item">
+            <div class="quick-stat-dot live"></div>
+            <small style="color: var(--text-secondary);">Live Tracking</small>
+          </div>
+          <div class="quick-stat-item">
+            <div class="quick-stat-dot" style="background: var(--accent-indigo);"></div>
+            <small style="color: var(--text-secondary);">AI Powered</small>
+          </div>
+          <div class="quick-stat-item">
+            <div class="quick-stat-dot" style="background: var(--accent-amber);"></div>
+            <small style="color: var(--text-secondary);">Smart Billing</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="row g-4 justify-content-center">
+        <div class="col-md-5 col-lg-4">
+          <div class="card" id="login-card">
+            <div class="card-header">
+              <i class="bi bi-box-arrow-in-right me-2"></i>Sign In
+            </div>
+            <div class="card-body">
+              <form id="login-form">
+                <div class="mb-3">
+                  <label class="form-label">Username</label>
+                  <div class="input-group">
+                    <span class="input-group-text"
+                      style="background: rgba(99,102,241,0.15); border: 1px solid var(--border); border-right: none; color: var(--accent-indigo);">
+                      <i class="bi bi-person"></i>
+                    </span>
+                    <input type="text" class="form-control" id="login-username" placeholder="Enter username" required />
+                  </div>
+                </div>
+                <div class="mb-4">
+                  <label class="form-label">Password</label>
+                  <div class="input-group">
+                    <span class="input-group-text"
+                      style="background: rgba(99,102,241,0.15); border: 1px solid var(--border); border-right: none; color: var(--accent-indigo);">
+                      <i class="bi bi-lock"></i>
+                    </span>
+                    <input type="password" class="form-control" id="login-password" placeholder="Enter password"
+                      required />
+                  </div>
+                </div>
+                <button type="submit" class="btn btn-primary w-100" id="login-btn">
+                  <i class="bi bi-box-arrow-in-right me-2"></i>Sign In
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-5 col-lg-4">
+          <div class="card" id="register-card">
+            <div class="card-header">
+              <i class="bi bi-person-plus me-2"></i>Create Account
+            </div>
+            <div class="card-body">
+              <form id="register-form">
+                <div class="mb-3">
+                  <label class="form-label">Username</label>
+                  <input type="text" class="form-control" id="register-username" placeholder="Choose a username"
+                    required />
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Email <span
+                      style="color: var(--text-muted); font-weight: 400;">(optional)</span></label>
+                  <input type="email" class="form-control" id="register-email" placeholder="your@email.com" />
+                </div>
+                <div class="mb-4">
+                  <label class="form-label">Password</label>
+                  <input type="password" class="form-control" id="register-password" placeholder="Create a password"
+                    required />
+                </div>
+                <button type="submit" class="btn btn-success w-100" id="register-btn">
+                  <i class="bi bi-person-plus me-2"></i>Create Account
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Features Section -->
+      <div class="row g-4 mt-5 justify-content-center">
+        <div class="col-md-4 col-lg-3">
+          <div class="text-center p-4" style="animation: slideUp 0.5s ease-out 0.3s both;">
+            <div style="font-size: 2.5rem; margin-bottom: 1rem;">
+              <i class="bi bi-lightning-charge-fill" style="color: var(--accent-amber);"></i>
+            </div>
+            <h6 style="font-weight: 700;">Instant Booking</h6>
+            <p style="color: var(--text-muted); font-size: 0.85rem; margin: 0;">Reserve your spot in seconds with
+              automatic allocation.</p>
+          </div>
+        </div>
+        <div class="col-md-4 col-lg-3">
+          <div class="text-center p-4" style="animation: slideUp 0.5s ease-out 0.4s both;">
+            <div style="font-size: 2.5rem; margin-bottom: 1rem;">
+              <i class="bi bi-graph-up-arrow" style="color: var(--accent-emerald);"></i>
+            </div>
+            <h6 style="font-weight: 700;">Smart Analytics</h6>
+            <p style="color: var(--text-muted); font-size: 0.85rem; margin: 0;">Track spending, history, and get
+              intelligent insights.</p>
+          </div>
+        </div>
+        <div class="col-md-4 col-lg-3">
+          <div class="text-center p-4" style="animation: slideUp 0.5s ease-out 0.5s both;">
+            <div style="font-size: 2.5rem; margin-bottom: 1rem;">
+              <i class="bi bi-shield-check" style="color: var(--accent-indigo);"></i>
+            </div>
+            <h6 style="font-weight: 700;">Secure & Reliable</h6>
+            <p style="color: var(--text-muted); font-size: 0.85rem; margin: 0;">JWT authentication with token revocation
+              for safety.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- =============================== -->
+    <!-- USER DASHBOARD                  -->
+    <!-- =============================== -->
+    <div id="user-dashboard" style="display: none;">
+      <!-- Dashboard Header -->
+      <div class="mb-4">
+        <h1 class="dashboard-title" id="user-greeting">Welcome back</h1>
+        <p class="dashboard-subtitle">Here's your parking overview for today</p>
+      </div>
+
+      <!-- Metric Cards -->
+      <div class="row g-4 mb-4">
+        <div class="col-6 col-lg-3">
+          <div class="metric-card gradient-purple">
+            <div class="metric-icon"><i class="bi bi-receipt"></i></div>
+            <div class="metric-label">Total Reservations</div>
+            <div class="metric-value" id="metric-total">0</div>
+          </div>
+        </div>
+        <div class="col-6 col-lg-3">
+          <div class="metric-card gradient-green">
+            <div class="metric-icon"><i class="bi bi-clock-history"></i></div>
+            <div class="metric-label">Active Now</div>
+            <div class="metric-value" id="metric-active">0</div>
+          </div>
+        </div>
+        <div class="col-6 col-lg-3">
+          <div class="metric-card gradient-gold">
+            <div class="metric-icon"><i class="bi bi-cash-stack"></i></div>
+            <div class="metric-label">Spent (30 days)</div>
+            <div class="metric-value" id="metric-spent">₹0</div>
+          </div>
+        </div>
+        <div class="col-6 col-lg-3">
+          <div class="metric-card gradient-pink">
+            <div class="metric-icon"><i class="bi bi-star-fill"></i></div>
+            <div class="metric-label">Favorite Lot</div>
+            <div class="metric-value" id="metric-fav" style="font-size: 1.2rem;">—</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Booking + Reservations -->
+      <div class="row g-4">
+        <!-- Booking Form -->
+        <div class="col-lg-5">
+          <div class="card mb-4">
+            <div class="card-header">
+              <i class="bi bi-calendar-check me-2"></i>Book a Parking Spot
+            </div>
+            <div class="card-body">
+              <form id="book-form">
+                <div class="mb-3">
+                  <label class="form-label">Select Parking Lot</label>
+                  <select class="form-select" id="lot-select" required>
+                    <option value="">— Choose a lot —</option>
+                  </select>
+                </div>
+                <!-- Lot info preview -->
+                <div id="lot-preview" style="display: none;" class="mb-3">
+                  <div class="p-3"
+                    style="background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); border-radius: 8px;">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                      <small style="color: var(--text-muted);">Availability</small>
+                      <span class="badge bg-success" id="lot-preview-avail">0 spots</span>
+                    </div>
+                    <div class="occupancy-bar-wrap">
+                      <div class="occupancy-bar-fill" id="lot-preview-bar" style="width: 0%;"></div>
+                    </div>
+                    <div class="d-flex justify-content-between mt-2">
+                      <small style="color: var(--text-muted);"><i class="bi bi-currency-rupee"></i> <span
+                          id="lot-preview-price">0</span>/hr</small>
+                      <small style="color: var(--text-muted);"><i class="bi bi-clock"></i> Est. <span
+                          id="lot-preview-est">—</span></small>
+                    </div>
+                    <!-- AI Duration Prediction -->
+                    <div id="ai-prediction-panel" style="display: none; margin-top: 0.75rem; padding: 0.6rem 0.75rem;
+                      background: linear-gradient(135deg, rgba(99,102,241,0.08), rgba(139,92,246,0.06));
+                      border: 1px solid rgba(99,102,241,0.2); border-radius: 8px;">
+                      <div class="d-flex align-items-center gap-2 mb-1">
+                        <i class="bi bi-stars" style="color: var(--accent-purple); font-size: 0.9rem;"></i>
+                        <small style="font-weight: 600; color: var(--accent-purple);">AI Prediction</small>
+                        <span id="ai-confidence-badge" class="badge"
+                          style="font-size: 0.65rem; padding: 2px 6px; background: rgba(99,102,241,0.15); color: var(--accent-indigo);">—</span>
+                      </div>
+                      <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                          <small style="color: var(--text-muted);">Est. Duration</small><br>
+                          <strong id="ai-pred-duration"
+                            style="color: var(--text-primary); font-size: 0.95rem;">—</strong>
+                        </div>
+                        <div class="text-end">
+                          <small style="color: var(--text-muted);">Est. Cost</small><br>
+                          <strong id="ai-pred-cost" style="color: var(--accent-amber); font-size: 0.95rem;">—</strong>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Vehicle Number <span
+                      style="color: var(--text-muted); font-weight: 400;">(optional)</span></label>
+                  <input type="text" class="form-control" id="vehicle-number" placeholder="e.g. MH-01-AB-1234" />
+                </div>
+                <div class="mb-4">
+                  <label class="form-label">Vehicle Model <span
+                      style="color: var(--text-muted); font-weight: 400;">(optional)</span></label>
+                  <input type="text" class="form-control" id="vehicle-model" placeholder="e.g. Honda City" />
+                </div>
+                <button type="submit" class="btn btn-primary w-100" id="book-btn">
+                  <i class="bi bi-check-circle me-2"></i>Book First Available Spot
+                </button>
+              </form>
+            </div>
+          </div>
+
+          <!-- Quick Actions -->
+          <div class="card">
+            <div class="card-header">
+              <i class="bi bi-lightning-charge me-2"></i>Quick Actions
+            </div>
+            <div class="card-body">
+              <div class="d-grid gap-2">
+                <button class="btn btn-outline-primary btn-sm" onclick="triggerExport()" id="export-btn">
+                  <i class="bi bi-file-earmark-arrow-down me-2"></i>Export Reservation History (CSV)
+                </button>
+                <div id="export-status" class="alert alert-info mb-0 mt-2" style="display: none;">
+                  <small><i class="bi bi-info-circle me-1"></i><span id="export-status-text"></span></small>
+                </div>
+                <a id="download-csv-link" href="#" class="btn btn-sm btn-success" style="display: none;" download>
+                  <i class="bi bi-download me-1"></i>Download CSV
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Reservations Table -->
+        <div class="col-lg-7">
+          <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+              <span><i class="bi bi-list-check me-2"></i>My Reservations</span>
+              <button class="btn btn-outline-secondary btn-sm" onclick="loadUserData()" title="Refresh"
+                id="refresh-user-btn">
+                <i class="bi bi-arrow-clockwise"></i>
+              </button>
+            </div>
+            <div class="card-body p-0">
+              <div class="table-responsive">
+                <table class="table table-sm mb-0">
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>Lot</th>
+                      <th>Spot</th>
+                      <th>Start</th>
+                      <th>Cost</th>
+                      <th>Status</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody id="reservations-table">
+                    <tr>
+                      <td colspan="7">
+                        <div class="empty-state">
+                          <i class="bi bi-inbox"></i>
+                          <p>No reservations yet.<br />Book a spot to get started!</p>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Lot Availability Chart -->
+          <div class="card mt-4" id="user-chart-card">
+            <div class="card-header">
+              <i class="bi bi-bar-chart-line me-2"></i>Lot Availability Overview
+            </div>
+            <div class="card-body">
+              <div style="position: relative; height: 250px;">
+                <canvas id="userAvailChart"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- =============================== -->
+    <!-- ADMIN DASHBOARD                 -->
+    <!-- =============================== -->
+    <div id="admin-dashboard" style="display: none;">
+      <!-- Dashboard Header -->
+      <div class="d-flex justify-content-between align-items-start mb-4 flex-wrap gap-3">
+        <div>
+          <h1 class="dashboard-title">Admin Dashboard</h1>
+          <p class="dashboard-subtitle mb-0">Manage parking lots, users, and system analytics</p>
+        </div>
+        <div class="d-flex gap-2 flex-wrap">
+          <button class="btn btn-outline-primary btn-sm" onclick="loadAdminLots()" id="refresh-admin-btn">
+            <i class="bi bi-arrow-clockwise me-1"></i>Refresh
+          </button>
+        </div>
+      </div>
+
+      <!-- Admin Metrics -->
+      <div class="row g-4 mb-4" id="admin-metrics-row">
+        <div class="col-6 col-lg-4 col-xl">
+          <div class="metric-card gradient-purple">
+            <div class="metric-icon"><i class="bi bi-people"></i></div>
+            <div class="metric-label">Total Users</div>
+            <div class="metric-value" id="admin-metric-users">—</div>
+          </div>
+        </div>
+        <div class="col-6 col-lg-4 col-xl">
+          <div class="metric-card gradient-green">
+            <div class="metric-icon"><i class="bi bi-building"></i></div>
+            <div class="metric-label">Total Lots</div>
+            <div class="metric-value" id="admin-metric-lots">—</div>
+          </div>
+        </div>
+        <div class="col-6 col-lg-4 col-xl">
+          <div class="metric-card gradient-gold">
+            <div class="metric-icon"><i class="bi bi-geo-alt"></i></div>
+            <div class="metric-label">Total Spots</div>
+            <div class="metric-value" id="admin-metric-spots">—</div>
+          </div>
+        </div>
+        <div class="col-6 col-lg-6 col-xl">
+          <div class="metric-card gradient-pink">
+            <div class="metric-icon"><i class="bi bi-car-front-fill"></i></div>
+            <div class="metric-label">Occupied Now</div>
+            <div class="metric-value" id="admin-metric-occupied">—</div>
+          </div>
+        </div>
+        <div class="col-12 col-lg-6 col-xl">
+          <div class="metric-card"
+            style="background: linear-gradient(135deg, rgba(34,211,238,0.12), rgba(96,165,250,0.06)); border-color: rgba(34,211,238,0.18);">
+            <div class="metric-icon" style="color: var(--accent-cyan);"><i class="bi bi-currency-rupee"></i></div>
+            <div class="metric-label">Total Revenue</div>
+            <div class="metric-value" id="admin-metric-revenue">₹0</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Admin Main Grid -->
+      <div class="row g-4">
+        <!-- ── Left Column ──────────────────── -->
+        <div class="col-lg-6">
+          <!-- Create Lot -->
+          <div class="card mb-4">
+            <div class="card-header">
+              <i class="bi bi-plus-circle me-2"></i>Create Parking Lot
+            </div>
+            <div class="card-body">
+              <form id="lot-form">
+                <div class="mb-3">
+                  <label class="form-label">Location Name</label>
+                  <input type="text" class="form-control" id="lot-name" placeholder="e.g. Downtown Garage" required />
+                </div>
+                <div class="row g-3 mb-3">
+                  <div class="col-6">
+                    <label class="form-label">Price/hr (₹)</label>
+                    <input type="number" class="form-control" id="lot-price" min="1" value="50" required />
+                  </div>
+                  <div class="col-6">
+                    <label class="form-label">Spots</label>
+                    <input type="number" class="form-control" id="lot-spots" min="1" value="10" required />
+                  </div>
+                </div>
+                <button type="submit" class="btn btn-primary w-100" id="create-lot-btn">
+                  <i class="bi bi-plus-circle me-2"></i>Create Lot
+                </button>
+              </form>
+            </div>
+          </div>
+
+          <!-- Revenue Pie Chart -->
+          <div class="card mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+              <span><i class="bi bi-pie-chart-fill me-2"></i>Revenue by User</span>
+              <span class="badge"
+                style="background: rgba(34,211,238,0.15); color: var(--accent-cyan); border: 1px solid rgba(34,211,238,0.25);"
+                id="revenue-total-badge">₹0 total</span>
+            </div>
+            <div class="card-body">
+              <div id="revenue-chart-empty" class="empty-state" style="padding: 1.5rem; display: none;">
+                <i class="bi bi-pie-chart" style="font-size: 2rem;"></i>
+                <p>No revenue data yet.<br />Revenue appears when users complete reservations.</p>
+              </div>
+              <div id="revenue-chart-wrap" style="position: relative; height: 320px;">
+                <canvas id="revenueChart"></canvas>
+              </div>
+              <!-- Per-user breakdown table -->
+              <div id="revenue-breakdown" class="mt-3"></div>
+            </div>
+          </div>
+
+          <!-- Admin Tools & Reports -->
+          <div class="row g-4">
+            <div class="col-md-6">
+              <div class="card h-100">
+                <div class="card-header">
+                  <i class="bi bi-tools me-2"></i>Admin Tools
+                </div>
+                <div class="card-body">
+                  <div class="d-grid gap-2">
+                    <button class="btn btn-primary btn-sm" onclick="generateAdminReport()" id="gen-report-btn">
+                      <i class="bi bi-file-earmark-pdf-fill me-2"></i>Generate Report (PDF)
+                    </button>
+                    <div id="report-gen-status" class="alert alert-info mb-0 mt-2" style="display: none;">
+                      <small><i class="bi bi-info-circle me-1"></i><span id="report-gen-status-text"></span></small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="card h-100">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                  <span><i class="bi bi-file-earmark-pdf me-2"></i>Reports</span>
+                  <button class="btn btn-sm btn-outline-secondary" onclick="loadReports()" id="refresh-reports-btn">
+                    <i class="bi bi-arrow-clockwise"></i>
+                  </button>
+                </div>
+                <div class="card-body">
+                  <div id="reports-list">
+                    <div class="empty-state" style="padding: 1rem;">
+                      <i class="bi bi-folder2-open" style="font-size: 1.5rem;"></i>
+                      <p style="font-size: 0.85rem;">No reports yet</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ML Insights Panel -->
+          <div class="card mt-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+              <span><i class="bi bi-robot me-2"></i>AI / ML Insights</span>
+              <span class="badge" id="ml-sklearn-badge"
+                style="background: rgba(99,102,241,0.15); color: var(--accent-indigo); border: 1px solid rgba(99,102,241,0.25);">
+                Checking…
+              </span>
+            </div>
+            <div class="card-body">
+              <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1rem;">
+                Train ML models on historical reservation data to power smart recommendations and duration predictions
+                for users.
+              </p>
+              <button class="btn btn-primary btn-sm w-100 mb-3" onclick="trainMLModels()" id="ml-train-btn">
+                <i class="bi bi-cpu me-2"></i>Train All Models
+              </button>
+              <div id="ml-train-status" class="alert alert-info mb-3" style="display: none; font-size: 0.82rem;">
+                <i class="bi bi-info-circle me-1"></i><span id="ml-train-status-text"></span>
+              </div>
+              <!-- Duration Model -->
+              <div class="p-3 mb-2"
+                style="background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); border-radius: 8px;">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <div class="d-flex align-items-center gap-2">
+                    <i class="bi bi-clock-history" style="color: var(--accent-cyan);"></i>
+                    <small style="font-weight: 600;">Duration Predictor</small>
+                  </div>
+                  <span class="badge" id="ml-duration-status"
+                    style="background: rgba(100,116,139,0.15); color: var(--text-muted); font-size: 0.7rem;">Not
+                    trained</span>
+                </div>
+                <div class="row g-2" style="font-size: 0.82rem;">
+                  <div class="col-4 text-center">
+                    <small style="color: var(--text-muted);">Samples</small><br>
+                    <strong id="ml-duration-samples" style="color: var(--text-primary);">0</strong>
+                  </div>
+                  <div class="col-4 text-center">
+                    <small style="color: var(--text-muted);">MAE</small><br>
+                    <strong id="ml-duration-mae" style="color: var(--accent-amber);">—</strong>
+                  </div>
+                  <div class="col-4 text-center">
+                    <small style="color: var(--text-muted);">Algorithm</small><br>
+                    <strong style="color: var(--text-secondary); font-size: 0.75rem;">RandomForest</strong>
+                  </div>
+                </div>
+              </div>
+              <!-- Recommender Model -->
+              <div class="p-3 mb-2"
+                style="background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); border-radius: 8px;">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <div class="d-flex align-items-center gap-2">
+                    <i class="bi bi-stars" style="color: var(--accent-purple);"></i>
+                    <small style="font-weight: 600;">Lot Recommender</small>
+                  </div>
+                  <span class="badge" id="ml-recommender-status"
+                    style="background: rgba(100,116,139,0.15); color: var(--text-muted); font-size: 0.7rem;">Not
+                    trained</span>
+                </div>
+                <div class="row g-2" style="font-size: 0.82rem;">
+                  <div class="col-4 text-center">
+                    <small style="color: var(--text-muted);">Samples</small><br>
+                    <strong id="ml-recommender-samples" style="color: var(--text-primary);">0</strong>
+                  </div>
+                  <div class="col-4 text-center">
+                    <small style="color: var(--text-muted);">Accuracy</small><br>
+                    <strong id="ml-recommender-accuracy" style="color: var(--accent-emerald);">—</strong>
+                  </div>
+                  <div class="col-4 text-center">
+                    <small style="color: var(--text-muted);">Algorithm</small><br>
+                    <strong style="color: var(--text-secondary); font-size: 0.75rem;">GradientBoost</strong>
+                  </div>
+                </div>
+              </div>
+              <!-- Dynamic Pricing Model -->
+              <div class="p-3 mb-3"
+                style="background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); border-radius: 8px;">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <div class="d-flex align-items-center gap-2">
+                    <i class="bi bi-currency-exchange" style="color: var(--accent-amber);"></i>
+                    <small style="font-weight: 600;">Dynamic Pricing</small>
+                    <span class="badge"
+                      style="background: rgba(139,92,246,0.12); color: var(--accent-purple); font-size: 0.6rem; border: 1px solid rgba(139,92,246,0.2);">Neural
+                      Net</span>
+                  </div>
+                  <span class="badge" id="ml-pricing-status"
+                    style="background: rgba(100,116,139,0.15); color: var(--text-muted); font-size: 0.7rem;">Not
+                    trained</span>
+                </div>
+                <div class="row g-2" style="font-size: 0.82rem;">
+                  <div class="col-4 text-center">
+                    <small style="color: var(--text-muted);">Samples</small><br>
+                    <strong id="ml-pricing-samples" style="color: var(--text-primary);">0</strong>
+                  </div>
+                  <div class="col-4 text-center">
+                    <small style="color: var(--text-muted);">Status</small><br>
+                    <strong id="ml-pricing-trained-text" style="color: var(--text-muted);">Idle</strong>
+                  </div>
+                  <div class="col-4 text-center">
+                    <small style="color: var(--text-muted);">Architecture</small><br>
+                    <strong style="color: var(--text-secondary); font-size: 0.75rem;">MLP 10→64→32→1</strong>
+                  </div>
+                </div>
+              </div>
+              <!-- Dynamic Pricing Suggestions -->
+              <div class="p-3"
+                style="background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); border-radius: 8px;">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <div class="d-flex align-items-center gap-2">
+                    <i class="bi bi-tags" style="color: var(--accent-amber);"></i>
+                    <small style="font-weight: 600;">Price Suggestions (Next 6h)</small>
+                  </div>
+                  <button class="btn btn-sm btn-outline-secondary" onclick="loadMLPricing()"
+                    style="font-size: 0.7rem; padding: 2px 8px;">
+                    <i class="bi bi-arrow-clockwise"></i>
+                  </button>
+                </div>
+                <div id="ml-pricing-table" style="max-height: 180px; overflow-y: auto;">
+                  <div style="text-align: center; padding: 1rem; color: var(--text-muted);">
+                    <i class="bi bi-currency-exchange" style="font-size: 1.2rem;"></i>
+                    <p style="font-size: 0.8rem; margin-top: 0.4rem;">Train models to see pricing suggestions</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Right Column ─────────────────── -->
+        <div class="col-lg-6">
+          <!-- Lots Table -->
+          <div class="card mb-4">
+            <div class="card-header">
+              <i class="bi bi-list-ul me-2"></i>Parking Lots
+            </div>
+            <div class="card-body p-0">
+              <div class="table-responsive">
+                <table class="table table-sm mb-0">
+                  <thead>
+                    <tr>
+                      <th>Location</th>
+                      <th>Price</th>
+                      <th>Occupancy</th>
+                      <th>Available</th>
+                      <th>Occupied</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="admin-lots-table">
+                    <tr>
+                      <td colspan="6">
+                        <div class="empty-state" style="padding: 1.5rem;">
+                          <i class="bi bi-building" style="font-size: 2rem;"></i>
+                          <p>No lots created yet</p>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Occupancy Overview Chart -->
+          <div class="card mb-4">
+            <div class="card-header">
+              <i class="bi bi-bar-chart-line me-2"></i>Occupancy Overview
+            </div>
+            <div class="card-body">
+              <div style="position: relative; height: 280px;">
+                <canvas id="adminChart"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <!-- Most Booked Lots (Polar Area Chart) -->
+          <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+              <span><i class="bi bi-trophy-fill me-2"></i>Most Booked Lots</span>
+              <button class="btn btn-sm btn-outline-secondary" onclick="loadMostBookedLots()" title="Refresh">
+                <i class="bi bi-arrow-clockwise"></i>
+              </button>
+            </div>
+            <div class="card-body">
+              <div id="booked-chart-empty" class="empty-state" style="padding: 1.5rem; display: none;">
+                <i class="bi bi-trophy" style="font-size: 2rem;"></i>
+                <p>No booking data yet.<br />Data appears when users make reservations.</p>
+              </div>
+              <div id="booked-chart-wrap" style="position: relative; height: 340px;">
+                <canvas id="mostBookedChart"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+      <p>Built with <i class="bi bi-heart-fill" style="color: var(--accent-rose); font-size: 0.7rem;"></i> by VeloPark
+        &bull; Smart Parking Management</p>
+    </footer>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="/assets/js/app.js"></script>
+</body>
+
+</html>
