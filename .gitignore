@@ -1,0 +1,45 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.sqlite3
+.env
+.venv/
+venv/
+
+# Flask/Build/Dist
+instance/
+*.log
+
+# VS Code
+.vscode/
+
+# Redis/Memurai dumps
+*.rdb
+
+# Celery beat schedule files
+celerybeat-schedule*
+
+# Reports/exports generated at runtime
+backend/reports/*.pdf
+backend/exports/*.csv
+
+# Test caches
+.pytest_cache/
+
+# Node/PWA caches
+frontend/node_modules/
+frontend/.cache/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Coverage
+htmlcov/
+.coverage*
+
+# Misc
+*.bak
+*.tmp
